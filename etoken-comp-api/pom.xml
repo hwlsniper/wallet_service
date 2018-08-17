@@ -1,0 +1,146 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>it.etoken</groupId>
+		<artifactId>etoken-parent</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<artifactId>etoken-comp-api</artifactId>
+	<dependencies>
+		<dependency>
+			<groupId>io.dubbo.springboot</groupId>
+			<artifactId>spring-boot-starter-dubbo</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.etoken</groupId>
+			<artifactId>etoken-base-common</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>it.etoken</groupId>
+			<artifactId>etoken-base-interface</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>it.etoken</groupId>
+			<artifactId>etoken-base-model</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>it.etoken</groupId>
+			<artifactId>etoken-base-cache</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			  <groupId>com.github.penggle</groupId>  
+			    <artifactId>kaptcha</artifactId>  
+			    <version>2.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>app</finalName>
+		<!-- 定义需要过滤处理的资源 -->
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+					<include>**/*.tld</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<!-- 过滤替换设置 -->
+		<filters>
+			<!-- 替换项目私有环境配置文件 -->
+			<filter>conf/${resource.filter}</filter>
+			<!-- 替换公共环境配置文件 -->
+			<filter>../conf/${resource.filter}</filter>
+		</filters>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${springboot.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<!-- 重新打包一个可执行的jar -->
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- 把发布包打成zip -->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<finalName>etoken-comp-api-${project.version}</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
+					<descriptors>
+						<descriptor>../package/tar.gz.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- 把打包文件移动至install目录 -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-jar-parent</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<copy todir="../install">
+									<fileset dir="target">
+										<include name="*.tar.gz" />
+									</fileset>
+								</copy>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

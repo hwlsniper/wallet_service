@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+  <context id="context1">
+    <jdbcConnection connectionURL="" driverClass="com.mysql.jdbc.Driver" password="" userId="" />
+    <javaModelGenerator targetPackage="it.etoken.base.model.news.entity" targetProject="etoken-base-model" />
+    <sqlMapGenerator targetPackage="it.etoken.component.news.dao.mapper" targetProject="etoken-comp-news" />
+    <javaClientGenerator targetPackage="it.etoken.component.news.dao.mapper" targetProject="etoken-comp-news" type="ANNOTATEDMAPPER" />
+    <table schema="" tableName="">
+    </table>
+  </context>
+</generatorConfiguration>
