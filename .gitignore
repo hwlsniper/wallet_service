@@ -4,3 +4,9 @@
 /conf
 *.properties
 
+/etoken-comp-admin/conf/*.properties
+/etoken-comp-api/conf/*.properties
+/etoken-comp-eosblock/conf/*.properties
+/etoken-comp-market/conf/*.properties
+/etoken-comp-news/conf/*.properties
+/etoken-comp-user/conf/*.properties
