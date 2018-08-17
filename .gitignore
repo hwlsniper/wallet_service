@@ -1,1 +1,6 @@
 *.rdb
+/.metadata/
+/.metadata/
+/conf
+*.properties
+
