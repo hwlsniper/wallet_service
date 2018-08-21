@@ -1,5 +1,6 @@
 package it.etoken.component.admin.task;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -299,8 +300,8 @@ public class NewsFlashTask {
     		boolean isSame = false;
     		//不同记录条数
     		for (News news1 : list.getList()) {
-    			String title=news.getTitle();
-    			String title1=news1.getTitle();
+    			String title=news.getTitle().trim();
+    			String title1=news1.getTitle().trim();
     			if(title.equals(title1)) {
     				isSame = true;
     				break;
@@ -413,7 +414,15 @@ public class NewsFlashTask {
 				MLResultObject<HtmlTemplate> ml=htmlTemplateFacadeAPI.findTemplate();
 				String template=ml.getResult().getTemplate();
 				Double eosprice=findEosPrice();
-				String tempurl = HtmlUtils.gemHtmlforAlerts(content,newsFlash.getTitle(),eosprice.toString(), HtmlSave,template);
+				String tempurl="";
+				for (int i=0; i<3 ;i++) {
+					tempurl= HtmlUtils.gemHtmlforAlerts(content,newsFlash.getTitle(),eosprice.toString(), HtmlSave,template);
+					File file=new File(tempurl);    
+					if(!file.exists())    
+					{  
+						continue;
+					}   
+				} 
 				newsFlash.setUrl(HtmlServer + tempurl);
 			}
 			newsFlash.setContent(content);
