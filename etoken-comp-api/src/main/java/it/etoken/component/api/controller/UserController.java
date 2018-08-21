@@ -22,7 +22,10 @@ import com.alibaba.fastjson.JSONObject;
 
 import it.etoken.base.common.exception.MLException;
 import it.etoken.base.common.result.MLResult;
+import it.etoken.base.common.result.MLResultList;
 import it.etoken.base.common.result.MLResultObject;
+import it.etoken.base.model.user.entity.EostRecord;
+import it.etoken.base.model.user.entity.User;
 import it.etoken.base.model.user.entity.UserExt;
 import it.etoken.base.model.user.entity.UserPointRecord;
 import it.etoken.base.model.user.vo.InviteInfo;
@@ -32,6 +35,7 @@ import it.etoken.component.api.eosrpc.CreateAccount;
 import it.etoken.component.api.eosrpc.EosResult;
 import it.etoken.component.api.eosrpc.GetAccountInfo;
 import it.etoken.component.api.exception.MLApiException;
+import it.etoken.componet.user.facade.EostRecordFacadeAPI;
 import it.etoken.componet.user.facade.UserFacadeAPI;
 import it.etoken.componet.user.point.UserPointType;
 
@@ -47,6 +51,9 @@ public class UserController extends BaseController {
 	@Reference(version = "1.0.0", timeout = 30000, retries=0)
 	UserFacadeAPI userFacadeAPI2;
 	
+	@Reference(version = "1.0.0", timeout = 30000, retries=0)
+	EostRecordFacadeAPI eostRecordFacadeAPI;
+	
 	@Value("${nodeos.path.chain}")
 	String URL_CHAIN;
 	
@@ -55,6 +62,9 @@ public class UserController extends BaseController {
 	
 	@Value("${eos.server.api}")
 	String EOS_SERVER_API;
+	
+	@Value("${receive.point}")
+	String receive_point;
 
 	@ResponseBody
 	@RequestMapping(value = "/info/{id}")
@@ -306,5 +316,58 @@ public class UserController extends BaseController {
 			logger.error(e.toString());
 			return this.error(MLApiException.SYS_ERROR, null);
 		}
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/eostReceive")
+	public Object eostReceive(@RequestBody Map<String, String> requestMap,HttpServletRequest request) {
+		try{
+			String uid = request.getHeader("uid") ;
+			if (StringUtils.isEmpty(uid)) {
+				return this.error(MLApiException.PARAM_ERROR, null);
+			}
+			String eos_account=requestMap.get("eos_account");
+			MLResultList<EostRecord> list=eostRecordFacadeAPI.findByUid(uid);
+            if(list.isSuccess()) {
+            	if(list.getList().size()>0) {
+    				String type=list.getList().get(0).getType();
+    				if(type.equals("audit")) {
+    					return this.error(MLApiException.AUDIT, "您提取的eos正在审核中，请耐心等候");
+    				}
+    				if(type.equals("receive")) {
+    					return this.error(MLApiException.RECEIVE, "您提取的eos已经发放成功");
+    				}
+    			}
+			}
+			MLResultObject<User> obj=userFacadeAPI.findByUid(uid);
+			if(obj.isSuccess()) {
+				User user=obj.getResult();
+				String point=user.getPoint();
+				if(Integer.parseInt(point)<Integer.parseInt(receive_point)) {
+					return this.error(MLApiException.POINTNOTENOUGH, "您的积分暂时没有达到领取标准，多多签到可以新增积分哦");
+				}else {
+					EostRecord eostRecord=new EostRecord();
+					eostRecord.setType("audit");
+					eostRecord.setUid(Long.parseLong(uid));
+					eostRecord.setEost(-user.getEost());
+					eostRecord.setEosAccount(eos_account);
+					MLResult result=eostRecordFacadeAPI.saveEostRecord(eostRecord);
+					if(result.isSuccess()) {
+						MLResult rs=userFacadeAPI.updateEost(uid);
+						if(rs.isSuccess()) {
+							return this.success(true);
+						}else {
+							return this.error(MLApiException.SYS_ERROR, null);
+						}
+					}else {
+						return this.error(MLApiException.SYS_ERROR, null);
+					}
+				}
+			}
+		}catch (Exception e) {
+			logger.error(e.toString());
+			return this.error(MLApiException.SYS_ERROR, null);
+		}
+		return request;
 	}
 }

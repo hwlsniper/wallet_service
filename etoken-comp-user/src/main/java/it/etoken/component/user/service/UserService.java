@@ -99,4 +99,8 @@ public interface UserService {
 	 * @throws MLException
 	 */
 	public EosAccountOrder getOnePaidOderByUid(Long uid) throws MLException;
+	
+	public User findByUid(String uid) throws MLException;
+
+	public void updateEost(String uid) throws MLException;
 }

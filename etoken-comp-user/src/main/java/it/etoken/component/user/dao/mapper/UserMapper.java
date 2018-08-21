@@ -57,4 +57,7 @@ public interface UserMapper {
 	
 	@Select("SELECT * FROM user where username=#{username}")
 	User findByUsername(String username);
+	
+	@Update("update user set eost =#{e} where id=#{id}")
+	void updateEost(@Param("id")Long id,@Param("e") Double e);
 }

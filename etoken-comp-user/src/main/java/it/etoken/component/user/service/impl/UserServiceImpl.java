@@ -879,4 +879,28 @@ public class UserServiceImpl implements UserService {
 		}
 		
 	}
+	
+	@Override
+	public User findByUid(String uid) {
+		try {
+			User user = userMapper.findById(Long.parseLong(uid));
+			return user;
+		} catch (MLException ex) {
+			logger.error(ex.toString());
+			throw ex;
+		} catch (Exception e) {
+			logger.error(e.toString());
+			throw new MLException(MLCommonException.system_err);
+		}
+	}
+
+	@Override
+	public void updateEost(String uid) {
+		try {
+			 userMapper.updateEost(Long.parseLong(uid), 0.0);
+		} catch (Exception e) {
+			logger.error(e.toString());
+			throw new MLException(MLCommonException.system_err);
+		}
+	}
 }

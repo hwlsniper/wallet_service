@@ -60,4 +60,8 @@ public interface UserFacadeAPI {
 	public MLResultObject<EosAccountOrder> getOnePaidOderByUid(Long uid) throws MLException;
 	
 	public MLResultObject<Boolean> createEosAccountByOrder(Long orderId) throws MLException;
+	
+	public MLResultObject<User> findByUid(String uid);
+	
+	public MLResult updateEost(String uid);
 }

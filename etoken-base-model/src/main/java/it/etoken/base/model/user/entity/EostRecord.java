@@ -7,6 +7,7 @@ public class EostRecord extends BaseEntity {
 	private Long bid;
 	private String type;
 	private Double eost;
+	private String eosAccount;
 
 	public Long getUid() {
 		return uid;
@@ -38,6 +39,13 @@ public class EostRecord extends BaseEntity {
 
 	public void setEost(Double eost) {
 		this.eost = eost;
+	}
+	public String getEosAccount() {
+		return eosAccount;
+	}
+
+	public void setEosAccount(String eosAccount) {
+		this.eosAccount = eosAccount;
 	}
 
 }
