@@ -327,6 +327,9 @@ public class UserController extends BaseController {
 				return this.error(MLApiException.PARAM_ERROR, null);
 			}
 			String eos_account=requestMap.get("eos_account");
+			if (StringUtils.isEmpty(eos_account) || eos_account.length() != 12) {
+				return this.error(MLApiException.ACCOUNT_NAME_ERR, "账户名称必须为12位");
+			}
 			MLResultList<EostRecord> list=eostRecordFacadeAPI.findByUid(uid);
             if(list.isSuccess()) {
             	if(list.getList().size()>0) {
