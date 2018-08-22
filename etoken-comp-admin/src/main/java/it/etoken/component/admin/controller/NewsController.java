@@ -90,8 +90,16 @@ public class NewsController extends BaseController {
 			}
 			//生成html
 			if(params.getHtml()!=null) {
-				String url = HtmlUtils.gemHtml(params.getHtml(), HtmlSave);
-			    params.setUrl(HtmlServer+url);
+				if(params.getTid()==12) {
+					MLResultObject<HtmlTemplate> ml=htmlTemplateFacadeAPI.findTemplate();
+					String template=ml.getResult().getTemplate();
+					Double eosprice=findEosPrice();
+					String tempurl= HtmlUtils.gemHtmlforAlerts(params.getContent(),params.getTitle(),eosprice.toString(), HtmlSave,template);
+					params.setUrl(HtmlServer+tempurl);
+				}else {
+					String url = HtmlUtils.gemHtml(params.getHtml(), HtmlSave);
+				    params.setUrl(HtmlServer+url);
+				}
 			}
 			MLResult r = newsFacadeAPI2.saveUpdate(params);
 			if (r.isSuccess()) {
@@ -116,8 +124,16 @@ public class NewsController extends BaseController {
 			}
 			//生成html
 			if(params.getHtml()!=null) {
-				String url = HtmlUtils.gemHtml(params.getHtml(), HtmlSave);
-			    params.setUrl(HtmlServer+url);
+				if(params.getTid()==12) {
+					MLResultObject<HtmlTemplate> ml=htmlTemplateFacadeAPI.findTemplate();
+					String template=ml.getResult().getTemplate();
+					Double eosprice=findEosPrice();
+					String tempurl= HtmlUtils.gemHtmlforAlerts(params.getContent(),params.getTitle(),eosprice.toString(), HtmlSave,template);
+					params.setUrl(HtmlServer+tempurl);
+				}else {
+					String url = HtmlUtils.gemHtml(params.getHtml(), HtmlSave);
+				    params.setUrl(HtmlServer+url);
+				}
 			}
 			MLResult r = newsFacadeAPI.saveUpdate(params);
 			if (r.isSuccess()) {
