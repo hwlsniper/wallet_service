@@ -346,6 +346,36 @@ public class UserController extends BaseController {
 	}
 	
 	@ResponseBody
+	@RequestMapping(value = "/selectPoint")
+	public Object selectPoint(@RequestBody Map<String, String> requestMap,HttpServletRequest request) {
+		try{
+			String uid = request.getHeader("uid") ;
+			if (StringUtils.isEmpty(uid)) {
+				return this.error(MLApiException.PARAM_ERROR, null);
+			}
+			MLResultObject<User> obj=userFacadeAPI.findByUid(uid);
+			if(obj.isSuccess()) {
+				User user=obj.getResult();
+				String point=user.getPoint();
+				Double eost=user.getEost();
+				if(Integer.parseInt(point)<Integer.parseInt(receive_point)) {
+					return this.error(MLApiException.POINTNOTENOUGH, "您的积分暂时没有达到领取标准，多多签到可以新增积分哦");
+				}else {
+					if(eost==0) {
+						return this.error(MLApiException.NOEOST, "没有奖励可以领取。");
+					}
+					return this.success(true);
+				}
+				
+			}
+		}catch (Exception e) {
+			logger.error(e.toString());
+			return this.error(MLApiException.SYS_ERROR, null);
+		}
+		return request;
+	}
+	
+	@ResponseBody
 	@RequestMapping(value = "/eostReceive")
 	public Object eostReceive(@RequestBody Map<String, String> requestMap,HttpServletRequest request) {
 		try{
@@ -370,9 +400,13 @@ public class UserController extends BaseController {
 			if(obj.isSuccess()) {
 				User user=obj.getResult();
 				String point=user.getPoint();
+				Double eost=user.getEost();
 				if(Integer.parseInt(point)<Integer.parseInt(receive_point)) {
 					return this.error(MLApiException.POINTNOTENOUGH, "您的积分暂时没有达到领取标准，多多签到可以新增积分哦");
 				}else {
+					if(eost==0) {
+						return this.error(MLApiException.NOEOST, "没有奖励可以领取。");
+					}
 					EostRecord eostRecord=new EostRecord();
 					eostRecord.setType("audit");
 					eostRecord.setUid(Long.parseLong(uid));
