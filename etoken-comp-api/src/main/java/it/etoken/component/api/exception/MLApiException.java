@@ -39,7 +39,8 @@ public enum MLApiException implements MLExceptionEnum {
 	SUFFICIENT_RESOURCES("602","您仍有不少资源，把机会留给别人吧"),
 	AUDIT("603","您提取的eos正在审核中，请耐心等候"),
 	RECEIVE("604","您提取的eos已经发放成功"),
-	POINTNOTENOUGH("605","您的积分暂时没有达到领取标准，多多签到可以新增积分哦");
+	POINTNOTENOUGH("605","您的积分暂时没有达到领取标准，多多签到可以新增积分哦"),
+	WAItRECEIVE("606","没有领取记录等待领取");
 
 	private MLApiException(String code, String msg) {
 		this.code = code;
