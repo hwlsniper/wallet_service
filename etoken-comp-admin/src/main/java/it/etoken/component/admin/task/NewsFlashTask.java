@@ -414,16 +414,24 @@ public class NewsFlashTask {
 				MLResultObject<HtmlTemplate> ml=htmlTemplateFacadeAPI.findTemplate();
 				String template=ml.getResult().getTemplate();
 				Double eosprice=findEosPrice();
-				String tempurl="";
-				for (int i=0; i<3 ;i++) {
-					tempurl= HtmlUtils.gemHtmlforAlerts(content,newsFlash.getTitle(),eosprice.toString(), HtmlSave,template);
-					File file=new File(tempurl);    
+				try {
+					String tempurl= HtmlUtils.gemHtmlforAlerts(content,newsFlash.getTitle(),eosprice.toString(), HtmlSave,template);
+					File file=new File(tempurl);  
 					if(!file.exists())    
 					{  
-						continue;
-					}   
-				} 
-				newsFlash.setUrl(HtmlServer + tempurl);
+						for (int i=0; i<3 ;i++) {
+							tempurl= HtmlUtils.gemHtmlforAlerts(content,newsFlash.getTitle(),eosprice.toString(), HtmlSave,template);
+							File file1=new File(tempurl);    
+							if(!file1.exists())    
+							{  
+								continue;
+							}   
+						} 
+					} 
+			        newsFlash.setUrl(HtmlServer + tempurl);
+				} catch (Exception e) {
+					e.printStackTrace();		
+				}
 			}
 			newsFlash.setContent(content);
 			newsFlash.setHtml(content);
