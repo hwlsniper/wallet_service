@@ -317,6 +317,35 @@ public class UserController extends BaseController {
 		}
 	}
 	
+	
+	@ResponseBody
+	@RequestMapping(value = "/eostRecord")
+	public Object eostRecord(@RequestBody Map<String, String> requestMap,HttpServletRequest request) {
+		try{
+			String uid = request.getHeader("uid") ;
+			if (StringUtils.isEmpty(uid)) {
+				return this.error(MLApiException.PARAM_ERROR, null);
+			}
+			String eos_account=requestMap.get("eos_account");
+			if (StringUtils.isEmpty(eos_account) || eos_account.length() != 12) {
+				return this.error(MLApiException.ACCOUNT_NAME_ERR, "账户名称必须为12位");
+			}
+			MLResultList<EostRecord> list=eostRecordFacadeAPI.findByUid(uid);
+            if(list.isSuccess()) {
+            	if(list.getList().size()>0) {
+            	   EostRecord eostRecord =list.getList().get(0);
+            	   Double eost= eostRecord.getEost();
+            	   eostRecord.setEost(-eost);
+    			   return this.success(eostRecord);
+    			}
+			}
+		}catch (Exception e) {
+			logger.error(e.toString());
+			return this.error(MLApiException.SYS_ERROR, null);
+		}
+		return request;
+	}
+	
 	@ResponseBody
 	@RequestMapping(value = "/eostReceive")
 	public Object eostReceive(@RequestBody Map<String, String> requestMap,HttpServletRequest request) {
