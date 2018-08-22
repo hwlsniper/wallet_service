@@ -36,7 +36,10 @@ public enum MLApiException implements MLExceptionEnum {
 	ACTIVITY_IS_OVER("522", "100积分免费创建活动已结束，更多活动敬请期待"),
 	EOSRPC_FAIL("600", "失败"),
 	DELEGATEBWED("601","您已经免费抵押过，把机会留给别人吧"),
-	SUFFICIENT_RESOURCES("602","您仍有不少资源，把机会留给别人吧");
+	SUFFICIENT_RESOURCES("602","您仍有不少资源，把机会留给别人吧"),
+	AUDIT("603","您提取的eos正在审核中，请耐心等候"),
+	RECEIVE("604","您提取的eos已经发放成功"),
+	POINTNOTENOUGH("605","您的积分暂时没有达到领取标准，多多签到可以新增积分哦");
 
 	private MLApiException(String code, String msg) {
 		this.code = code;

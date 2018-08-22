@@ -265,4 +265,25 @@ public class UserFacadeAPIImpl implements UserFacadeAPI {
 			return new MLResultObject<Boolean>(e);
 		}
 	}
+	
+	@Override
+	public MLResultObject<User> findByUid(String uid) {
+		try {
+     		return new MLResultObject<User>(userService.findByUid(uid));
+		} catch (MLException e) {
+			logger.error(e.toString());
+			return new MLResultObject<User>(e);
+		}
+	}
+
+	@Override
+	public MLResult updateEost(String uid) {
+		try {
+			userService.updateEost(uid);
+			return new MLResult(true);
+		} catch (MLException e) {
+			logger.error(e.toString());
+			return new MLResult(e);
+		}
+	}
 }

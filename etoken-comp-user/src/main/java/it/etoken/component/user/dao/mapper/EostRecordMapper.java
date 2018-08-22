@@ -24,5 +24,12 @@ public interface EostRecordMapper {
 	
 	@Select("select count(*) from eost_record where type='reg' and uid=#{id}")
 	Long regCount(Long id);
+		
+	@Select("select * from eost_record where eos_account IS NOT NULL and uid=#{id}")
+	List<EostRecord> findEosRecord(Long id);
+	
+	@Insert("INSERT INTO eost_record(uid,type,bid,eost,eos_account) VALUES(#{uid}, #{type}, #{bid}, #{eost},#{eosAccount})")
+	@Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
+	void insertNew(EostRecord obj);
 
 }
