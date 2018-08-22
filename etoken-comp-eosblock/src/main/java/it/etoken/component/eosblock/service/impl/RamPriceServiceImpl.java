@@ -352,7 +352,7 @@ public class RamPriceServiceImpl implements RamPriceService {
 	@Override
 	public List<RamTradeLog> getNewTradeOrders() throws MLException {
 		Object[] actionsNames = new Object[] { "buyram", "sellram" };
-		Query query = new Query(Criteria.where("actions.name").in(actionsNames).and("block_id").exists(false).and("createdAt").exists(true));
+		Query query = new Query(Criteria.where("actions.name").in(actionsNames).and("createdAt").exists(true));
 		int page = 1;
 		int pageSize = 100;
 		query = query.with(new Sort(new Order(Direction.DESC, "createdAt")));
