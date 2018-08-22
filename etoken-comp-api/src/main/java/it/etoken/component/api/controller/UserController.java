@@ -1,6 +1,5 @@
 package it.etoken.component.api.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.dubbo.config.annotation.Reference;
@@ -20,7 +20,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
-import it.etoken.base.common.exception.MLException;
 import it.etoken.base.common.result.MLResult;
 import it.etoken.base.common.result.MLResultList;
 import it.etoken.base.common.result.MLResultObject;
@@ -333,13 +332,10 @@ public class UserController extends BaseController {
 			MLResultList<EostRecord> list=eostRecordFacadeAPI.findByUid(uid);
             if(list.isSuccess()) {
             	if(list.getList().size()>0) {
-    				String type=list.getList().get(0).getType();
-    				if(type.equals("audit")) {
-    					return this.error(MLApiException.AUDIT, "您提取的eos正在审核中，请耐心等候");
-    				}
-    				if(type.equals("receive")) {
-    					return this.error(MLApiException.RECEIVE, "您提取的eos已经发放成功");
-    				}
+            	   EostRecord eostRecord =list.getList().get(0);
+            	   Double eost= eostRecord.getEost();
+            	   eostRecord.setEost(-eost);
+    			   return this.success(eostRecord);
     			}
 			}
 			MLResultObject<User> obj=userFacadeAPI.findByUid(uid);
@@ -353,7 +349,7 @@ public class UserController extends BaseController {
 					eostRecord.setType("audit");
 					eostRecord.setUid(Long.parseLong(uid));
 					eostRecord.setEost(-user.getEost());
-					eostRecord.setEosAccount(eos_account);
+					eostRecord.setEos_account(eos_account);
 					MLResult result=eostRecordFacadeAPI.saveEostRecord(eostRecord);
 					if(result.isSuccess()) {
 						MLResult rs=userFacadeAPI.updateEost(uid);

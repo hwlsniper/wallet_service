@@ -28,7 +28,7 @@ public interface EostRecordMapper {
 	@Select("select * from eost_record where eos_account IS NOT NULL and uid=#{id}")
 	List<EostRecord> findEosRecord(Long id);
 	
-	@Insert("INSERT INTO eost_record(uid,type,bid,eost,eos_account) VALUES(#{uid}, #{type}, #{bid}, #{eost},#{eosAccount})")
+	@Insert("INSERT INTO eost_record(uid,type,bid,eost,eos_account) VALUES(#{uid}, #{type}, #{bid}, #{eost},#{eos_account})")
 	@Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
 	void insertNew(EostRecord obj);
 
