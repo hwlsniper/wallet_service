@@ -30,10 +30,7 @@ import it.etoken.base.common.jpush.PushService;
 import it.etoken.base.common.result.MLResultList;
 import it.etoken.base.common.result.MLResultObject;
 import it.etoken.base.common.utils.HttpClientUtils;
-import it.etoken.base.model.eosblock.entity.AccountsKeys;
-import it.etoken.base.model.eosblock.entity.Actions;
 import it.etoken.base.model.eosblock.entity.Delegatebw;
-import it.etoken.base.model.eosblock.entity.Tokens;
 import it.etoken.component.api.eosrpc.CreateAccount;
 import it.etoken.component.api.eosrpc.EosResult;
 import it.etoken.component.api.eosrpc.GetAccountDelbandInfo;
@@ -48,10 +45,7 @@ import it.etoken.component.api.eosrpc.GetVotingInfo;
 import it.etoken.component.api.eosrpc.ListProducers;
 import it.etoken.component.api.eosrpc.PushTransaction;
 import it.etoken.component.api.exception.MLApiException;
-import it.etoken.componet.eosblock.facade.AccountsKeysFacadeAPI;
-import it.etoken.componet.eosblock.facade.ActionsFacadeAPI;
 import it.etoken.componet.eosblock.facade.DelegatebwFacadeAPI;
-import it.etoken.componet.eosblock.facade.TokensFacadeAPI;
 import it.etoken.componet.eosblock.facade.TransactionsFacadeAPI;
 
 @Controller
@@ -62,16 +56,6 @@ public class EosRpcController extends BaseController {
 
 	@Autowired
 	PushService pushService;
-	
-	@Reference(version = "1.0.0")
-	TokensFacadeAPI tokensFacadeAPI;
-	
-	@Reference(version = "1.0.0")
-	AccountsKeysFacadeAPI accountsKeysFacadeAPI;
-	
-	@Reference(version = "1.0.0")
-	ActionsFacadeAPI actionsFacadeAPI;
-	
 
 	@Reference(version = "1.0.0", timeout = 120000, retries = 3)
 	TransactionsFacadeAPI transactionsFacadeAPI;
@@ -584,73 +568,6 @@ public class EosRpcController extends BaseController {
 		    BigDecimal b = new BigDecimal(realPrice);
 		    realPrice = b.setScale(5, BigDecimal.ROUND_HALF_UP).doubleValue(); 
 		    return this.success(realPrice);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}	
-		return this.error(MLApiException.EOSRPC_FAIL, null);
-	}
-	
-	@ResponseBody
-	@RequestMapping(value = "/queryAcountBalance")
-	public Object queryAcountBalance(@RequestBody Map<String, String> requestMap, HttpServletRequest request) {
-		logger.info("/queryAcountBalance request map : " + requestMap);
-		try {
-			String account=requestMap.get("account");
-			String symbol=requestMap.get("symbol");
-			MLResultList<Tokens> list=tokensFacadeAPI.findByAccountAndSymbol(account, symbol);
-			if(list.getList()==null|| list.getList().size()<=0) {
-				  return this.error(MLApiException.CONTRACT_NOT_EXIST_ERROR, null);
-			}
-			//有个问题token表同一账户有多条数据取那一条？
-			Double amount=list.getList().get(0).getAmount();
-		    return this.success(amount);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}	
-		return this.error(MLApiException.EOSRPC_FAIL, null);
-	}
-	
-	@ResponseBody
-	@RequestMapping(value = "/queryKeyAccounts")
-	public Object queryKeyAccounts(@RequestBody Map<String, String> requestMap, HttpServletRequest request) {
-		logger.info("/queryKeyAccounts request map : " + requestMap);
-		try {
-			String publicKey=requestMap.get("public_key");
-			MLResultList<AccountsKeys> result=accountsKeysFacadeAPI.findByPublicKey(publicKey);
-			if(!result.isSuccess()) {
-				return this.error(MLApiException.EOSRPC_FAIL, null);
-			}
-			List<AccountsKeys> list=result.getList();
-			if(list==null|| list.size()<=0) {
-				return this.error(MLApiException.CONTRACT_NOT_EXIST_ERROR, null);
-			}
-			ArrayList<String>  accountNames = new ArrayList<String> ();
-			for (AccountsKeys accountsKeys : list) {
-				accountNames.add(accountsKeys.getAccount());
-			}
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("account_names", accountNames);
-			return this.success(jsonObject);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}	
-		return this.error(MLApiException.EOSRPC_FAIL, null);
-	}
-	
-
-	@ResponseBody
-	@RequestMapping(value = "/queryActions")
-	public Object queryActions(@RequestBody Map<String, String> requestMap, HttpServletRequest request) {
-		logger.info("/queryActions request map : " + requestMap);
-		try {
-			String accountName=requestMap.get("account_name");
-			if (null == accountName || accountName.toString().isEmpty()) {
-				return this.error(MLApiException.PARAM_ERROR, requestMap);
-			}
-			MLResultList<Actions> result=actionsFacadeAPI.findByAccountAndSymbol(accountName);
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("actions", result.getList());
-			return this.success(jsonObject);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	
