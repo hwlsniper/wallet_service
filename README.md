@@ -50,27 +50,34 @@ Api：接口<br>
 
                       后台运行环境部署文档
 
-#1.数据库环境安装。<br>
-##1.1Mysql安装<br>
+#1.数据库环境安装。
+
+##1.1Mysql安装
    下载地址： https://dev.mysql.com/downloads/mysql/5.7.html#downloads<br>
      请下载mysql-5.7.20-winx64及以上的版本，安装后运行Etokenx_init.sql。<br>
      地址（https://github.com/eostoken/wallet_service/tree/release/1.0.1/sql）<br>
-##1.2Mongodb安装<br>
+     
+##1.2Mongodb安装
    下载地址：https://www.mongodb.com/download-center#community<br>
      请下载4.0.0 及以上的版本。<br>
-#2.Redis缓存<br>
-##redis安装<br>
+     
+#2.Redis缓存
+
+## 2.1redis安装
    下载地址：http://www.redis.cn/download.html<br>
     请下载Redis-x64-3.2.100及以上版本。<br>
     设置redis的密码跟你代码里面配置的密码相同<br>
     每次项目运行前先运行redis-server.exe<br>
-#3.Zookeeper环境<br>
-##Zookeeper 安装<br>
+    
+#3.Zookeeper环境
+
+## 3.1Zookeeper 安装
    下载地址：https://www.apache.org/dyn/closer.cgi/zookeeper/   <br>      
     请下载一个zookeeper-3.4.2及遇上版本。<br>
     每次项目运行前先运行zkServer.cmd<br>
     注：本项目如果要分布式部署请查询zookeeper及dubbo官网（zookeeper官网地址：http://zookeeper.apache.org/ dubbo官网：http://dubbo.apache.org/en-us/  ）做好相关的配置。<br>
-#4.项目运行<br>
+    
+#4.项目运行
    项目下载后用编码工具引入已存在的maven项目。(编码工具这边用的是Spring Tools Suite (STS)）<br>
     然后在父项目下maven install 打包所有项目<br>
     然后按照以下顺序启动。<br>
