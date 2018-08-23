@@ -359,12 +359,12 @@ public class UserController extends BaseController {
 				User user=obj.getResult();
 				String point=user.getPoint();
 				Double eost=user.getEost();
+				if(eost==0) {
+					return this.error(MLApiException.NOEOST, "没有奖励可以领取。");
+				}
 				if(Integer.parseInt(point)<Integer.parseInt(receive_point)) {
 					return this.error(MLApiException.POINTNOTENOUGH, "您的积分暂时没有达到领取标准，多多签到可以新增积分哦");
 				}else {
-					if(eost==0) {
-						return this.error(MLApiException.NOEOST, "没有奖励可以领取。");
-					}
 					return this.success(true);
 				}
 				
