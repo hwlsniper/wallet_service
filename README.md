@@ -73,7 +73,7 @@ Api：接口<br>
 
 ## 3.1Zookeeper 安装
     下载地址：https://www.apache.org/dyn/closer.cgi/zookeeper/   <br>      
-    请下载一个zookeeper-3.4.2及遇上版本。<br>
+    请下载一个zookeeper-3.4.2及以上版本。<br>
     每次项目运行前先运行zkServer.cmd<br>
     注：本项目如果要分布式部署请查询zookeeper及dubbo官网（zookeeper官网地址：http://zookeeper.apache.org/ dubbo官网：http://dubbo.apache.org/en-us/  ）做好相关的配置。<br>
     
