@@ -329,7 +329,12 @@ public class UserController extends BaseController {
 			MLResultList<EostRecord> list=eostRecordFacadeAPI.findByUid(uid);
             if(list.isSuccess()) {
             	if(list.getList().size()>0) {
-    			   return this.success(true);
+            		if(list.getList().size()>0) {
+                 	   EostRecord eostRecord =list.getList().get(0);
+                 	   Double eost= eostRecord.getEost();
+                 	   eostRecord.setEost(-eost);
+         			   return this.success(eostRecord);
+         			}
     			}else{
     			   return this.error(MLApiException.WAItRECEIVE, "没有领取记录等待领取");
     			}
